@@ -160,6 +160,11 @@ class EventEmitterMixin(object):
 
         with self._event_lock:
             for f in list(self._events[event].values()):
+                # Add the topic name to arguments if event starts with a '/'
+                if event.startswith("/"):
+                    kwargs["topic"] = event
+                    args += (event,)
+                
                 result = f(*args, **kwargs)
 
                 # If f was a coroutine function, we need to schedule it and
